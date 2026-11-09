@@ -24,9 +24,23 @@ router.get("/", (req, res) => {
 router.post("/", (req, res) => {
     const { name, price } = req.body;
 
+    if (
+        typeof name !== "string" ||
+        name.trim() === "" ||
+        typeof price !== "number" ||
+        !Number.isFinite(price) ||
+        price <= 0
+    ) {
+        res.status(400).json({
+        success: false,
+        message: "Name must be a non-empty string and price must be a positive number",
+        });
+        return;
+    }
+
     const newProduct: Product = {
         id: products.length + 1,
-        name,
+        name: name.trim(),
         price,
     }
 
@@ -89,6 +103,30 @@ router.put("/:id", (req, res) => {
         message: "Product updated successfully",
         daata: updatedProduct,
     })
+})
+
+router.delete("/:id", (req, res) => {
+    const id = Number(req.params.id);
+
+    const productIndex = products.findIndex(
+        (product) => product.id === id
+    )
+
+    if (productIndex === -1) {
+        res.status(404).json({
+            success: false,
+            message: "Product not found",
+        })
+        return;
+    }
+
+    const deletedProduct = products.splice(productIndex, 1)[0]
+
+    res.status(200).json({
+        success: true,
+        message: "Product deleted successfully",
+        data: deletedProduct,
+    });
 })
 
 export default router;
