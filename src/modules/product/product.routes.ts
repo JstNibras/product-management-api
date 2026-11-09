@@ -2,11 +2,40 @@ import { Router } from "express";
 
 const router = Router();
 
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+}
+
+const products: Product[] = [
+  { id: 1, name: "Laptop", price: 50000 },
+  { id: 2, name: "Phone", price: 25000 },
+];
+
 router.get("/", (req, res) => {
     res.status(200).json({
         success: true,
         message: "Products retrieved successfully",
-        data: [],
+        data: products,
+    })
+})
+
+router.post("/", (req, res) => {
+    const { name, price } = req.body;
+
+    const newProduct: Product = {
+        id: products.length + 1,
+        name,
+        price,
+    }
+
+    products.push(newProduct)
+
+    res.status(201).json({
+        success: true,
+        message: "Product created successfully",
+        data: newProduct,
     })
 })
 
