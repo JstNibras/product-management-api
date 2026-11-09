@@ -59,4 +59,36 @@ router.get("/:id", (req, res) => {
     })
 })
 
+router.put("/:id", (req, res) => {
+    const id = Number(req.params.id);
+
+    const productIndex = products.findIndex(
+        (product) => product.id === id
+    )
+
+    if (productIndex === -1) {
+        res.status(404).json({
+            success: false,
+            messsage: "Product not found",
+        })
+        return;
+    }
+
+    const { name, price } = req.body;
+
+    const updatedProduct: Product = {
+        id,
+        name,
+        price,
+    }
+
+    products[productIndex] = updatedProduct;
+
+    res.status(200).json({
+        success: true,
+        message: "Product updated successfully",
+        daata: updatedProduct,
+    })
+})
+
 export default router;
