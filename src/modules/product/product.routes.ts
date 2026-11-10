@@ -1,17 +1,8 @@
 import { Router } from "express";
 
+import { validateProduct } from "./product.validation";
+
 const router = Router();
-
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-}
-
-const products: Product[] = [
-  { id: 1, name: "Laptop", price: 50000 },
-  { id: 2, name: "Phone", price: 25000 },
-];
 
 router.get("/", (req, res) => {
     res.status(200).json({
@@ -22,21 +13,15 @@ router.get("/", (req, res) => {
 })
 
 router.post("/", (req, res) => {
-    const { name, price } = req.body;
-
-    if (
-        typeof name !== "string" ||
-        name.trim() === "" ||
-        typeof price !== "number" ||
-        !Number.isFinite(price) ||
-        price <= 0
-    ) {
+    if (!validateProduct(req.body)) {
         res.status(400).json({
         success: false,
-        message: "Name must be a non-empty string and price must be a positive number",
+        message: "Invalid product data",
         });
         return;
     }
+
+    const { name, price } = req.body;
 
     const newProduct: Product = {
         id: products.length + 1,
