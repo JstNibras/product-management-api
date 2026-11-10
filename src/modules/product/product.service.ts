@@ -1,3 +1,4 @@
+import AppError from "../../utils/app-error.js";
 import ProductRepository from "./product.repository.js";
 
 class ProductService {
@@ -13,7 +14,7 @@ class ProductService {
         const product = this.productRepository.findById(id);
 
         if (!product) {
-        throw new Error("Product not found");
+            throw new AppError("Product not found", 404);
         }
 
         return product;
@@ -21,7 +22,7 @@ class ProductService {
 
     createProduct(data: { name: string; price: number }) {
         if (data.price <= 0) {
-            throw new Error("Price must be greater than zero");
+            throw new AppError("Price must be greater than zero", 400);
         }
 
         return this.productRepository.create(data);
@@ -29,7 +30,7 @@ class ProductService {
 
     updateProduct(id: number, data: { name: string; price: number }) {
         if (data.price <= 0) {
-            throw new Error("Price must be greater than zero");
+            throw new AppError("Price must be greater than zero", 400);
         }
 
         const product = this.productRepository.update(id, data);

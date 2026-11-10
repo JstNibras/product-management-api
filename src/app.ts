@@ -1,5 +1,6 @@
 import express from "express";
 import productRoutes from "./modules/product/product.routes.js";
+import { errorHandler } from "./middlewares/error.middleware.js";
 
 const app = express();
 
@@ -13,5 +14,7 @@ app.get("/health", (req, res) => {
     message: "Server is healthy",
   });
 });
+
+app.use(errorHandler);
 
 export default app;

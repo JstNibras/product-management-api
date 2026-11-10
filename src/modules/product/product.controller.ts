@@ -6,14 +6,18 @@ const productRepository = new ProductRepository();
 const productService = new ProductService(productRepository);
 
 class ProductController {
-    getAllProducts = (req: Request, res: Response) => {
-        const products = productService.getAllProducts();
+    getAllProducts = (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const products = productService.getAllProducts();
 
-        res.status(200).json({
-            success: true,
-            message: "Products retrieved successfully",
-            data: products,
-        });
+            res.status(200).json({
+                success: true,
+                message: "Products retrieved successfully",
+                data: products,
+            });
+        } catch (error) {
+            next(error);
+        }
     };
 
     getProductById = (req: Request, res: Response, next: NextFunction) => {
