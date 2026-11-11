@@ -3,3 +3,9 @@ dist
 .env
 .postman
 postman
+/src/generated/prisma
+.agents/
+.claude/
+.windsurf/
+skills-lock.json
+src/generated/prisma/
