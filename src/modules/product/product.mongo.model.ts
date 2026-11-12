@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface IProduct extends Document {
+  externalId: string;
   name: string;
   price: number;
 }
