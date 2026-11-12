@@ -1,35 +1,39 @@
 import prisma from "../../config/prisma.js";
 
+interface ProductData {
+  externalId: string;
+  name: string;
+  price: number;
+}
+
 class ProductSqlRepository {
     async findAll() {
         return prisma.product.findMany();
     }
 
-    async findById(id: number) {
+    async findByExternalId(externalId: string) {
         return prisma.product.findUnique({
-            where: { id },
+            where: { externalId },
         });
     }
 
-    async create(data: { name: string; price: number }) {
-        return prisma.product.create({
-            data,
-        });
+    async create(data: ProductData) {
+        return prisma.product.create({ data });
     }
 
     async update(
-        id: number,
-        data: { name: string; price: number }
+        externalId: string,
+        data: Omit<ProductData, "externalId">
     ) {
         return prisma.product.update({
-            where: { id },
+            where: { externalId },
             data,
         });
     }
 
-    async delete(id: number) {
+    async delete(externalId: string) {
         return prisma.product.delete({
-            where: { id },
+            where: { externalId },
         });
     }
 }

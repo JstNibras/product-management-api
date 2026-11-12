@@ -1,17 +1,17 @@
 import AppError from "../../utils/app-error.js";
-import ProductRepository from "./product.repository.js";
+import ProductDualRepository from "./product.dual.repository.js";
 
 class ProductService {
     constructor(
-        private productRepository: ProductRepository
+        private productRepository = new ProductDualRepository()
     ) {}
 
-    getAllProducts() {
+    async getAllProducts() {
         return this.productRepository.findAll();
     }
 
-    getProductById(id: number) {
-        const product = this.productRepository.findById(id);
+    async getProductById(externalId: string) {
+        const product = await this.productRepository.findByExternalId(externalId);
 
         if (!product) {
             throw new AppError("Product not found", 404);
@@ -20,7 +20,7 @@ class ProductService {
         return product;
     }
 
-    createProduct(data: { name: string; price: number }) {
+    async createProduct(data: { name: string; price: number }) {
         if (data.price <= 0) {
             throw new AppError("Price must be greater than zero", 400);
         }
@@ -28,25 +28,31 @@ class ProductService {
         return this.productRepository.create(data);
     }
 
-    updateProduct(id: number, data: { name: string; price: number }) {
+    async updateProduct(
+        externalId: string,
+        data: { name: string; price: number }
+    ) {
         if (data.price <= 0) {
             throw new AppError("Price must be greater than zero", 400);
         }
 
-        const product = this.productRepository.update(id, data);
+        const product = await this.productRepository.update(
+            externalId,
+            data
+        );
 
         if (!product) {
-            throw new Error("Product not found");
+            throw new AppError("Product not found", 404);
         }
 
         return product;
     }
 
-    deleteProduct(id: number) {
-        const product = this.productRepository.delete(id);
+    async deleteProduct(externalId: string) {
+        const product = await this.productRepository.delete(externalId);
 
         if (!product) {
-            throw new Error("Product not found");
+            throw new AppError("Product not found", 404);
         }
 
         return product;
